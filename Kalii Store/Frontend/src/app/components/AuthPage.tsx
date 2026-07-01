@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { Page, User } from './types';
+import { ADMIN_EMAIL, ADMIN_PASSWORD } from './types';
 
 interface AuthPageProps {
   mode: 'login' | 'register' | 'forgot';
@@ -19,8 +20,26 @@ export function AuthPage({ mode, onNavigate, onLogin }: AuthPageProps) {
   const set = (field: string, value: string) => setForm(prev => ({ ...prev, [field]: value }));
 
   const getUsers = (): User[] => {
-    try { return JSON.parse(localStorage.getItem('kalii_users') || '[]'); } catch { return []; }
-  };
+  try {
+    let users: User[] = JSON.parse(localStorage.getItem("kalii_users") || "[]");
+
+    if (!users.some(user => user.email === ADMIN_EMAIL)) {
+      users.push({
+        firstName: "Admin",
+        lastName: "Kalii",
+        email: ADMIN_EMAIL,
+        password: ADMIN_PASSWORD,
+      });
+
+      localStorage.setItem("kalii_users", JSON.stringify(users));
+    }
+
+    return users;
+  } catch {
+    return [];
+  }
+};
+  
   const saveUsers = (users: User[]) => localStorage.setItem('kalii_users', JSON.stringify(users));
 
   const handleRegister = () => {
@@ -44,9 +63,9 @@ export function AuthPage({ mode, onNavigate, onLogin }: AuthPageProps) {
     const users = getUsers();
     const match = users.find(u => u.email === form.email && u.password === form.password);
     if (!match) return setError('Incorrect email or password.');
-    localStorage.setItem('kalii_session', JSON.stringify(match));
+   
     onLogin(match);
-    onNavigate('home');
+    
   };
 
   const handleForgot = () => {
