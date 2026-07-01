@@ -1,11 +1,29 @@
 
-  # Kalii Clothing Store
+  # 🛒 Kalii Store
 
-  This is a code bundle for Kalii Clothing Store. The original project is available at https://www.figma.com/design/cT00B7boSVjB1bX7xwD39S/Kalii-Clothing-Store.
+Kalii Store is a modern full-stack e-commerce application built with a React (Vite + TypeScript) frontend and a Spring Boot backend with PostgreSQL. The project is structured to support scalable API-driven development, with the backend currently in active development.
 
-  ## Running the code
+---
 
-  Run `npm i` to install the dependencies.
+## 🚀 Tech Stack
 
-  Run `npm run dev` to start the development server.
-  
+### Frontend
+- React (Vite)
+- TypeScript
+- React Router
+- Axios
+- Tailwind 
+
+### Backend
+- Java Spring Boot
+- Spring Web
+- Spring Data JPA
+- Hibernate
+- REST API architecture
+
+### Database
+- PostgreSQL
+
+---
+
+## 📁 Project Structure
