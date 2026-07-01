@@ -39,6 +39,26 @@ export default function App() {
   const [searchQuery, setSearchQuery]             = useState('');
   const [orderRef, setOrderRef]                   = useState('');
 
+  // Create the admin account if it doesn't already exist
+useEffect(() => {
+  const users = JSON.parse(localStorage.getItem("kalii_users") || "[]");
+
+  const adminExists = users.some(
+    (u: any) => u.email === ADMIN_EMAIL
+  );
+
+  if (!adminExists) {
+    users.push({
+      firstName: "Admin",
+      lastName: "Kalii",
+      email: ADMIN_EMAIL,
+      password: ADMIN_PASSWORD,
+    });
+
+    localStorage.setItem("kalii_users", JSON.stringify(users));
+  }
+}, []);
+
   useEffect(() => { ls.set('kalii_cart',     cartItems); }, [cartItems]);
   useEffect(() => { ls.set('kalii_wishlist',  wishlist);  }, [wishlist]);
   useEffect(() => { ls.set('kalii_orders',    orders);    }, [orders]);
@@ -71,12 +91,21 @@ export default function App() {
 
   // ── Auth ──────────────────────────────────────────────────────────────────
   const handleLogin = (user: User) => {
-    const admin = user.email === ADMIN_EMAIL && user.password === ADMIN_PASSWORD;
-    setIsAdmin(admin);
-    setCurrentUser(user);
-    ls.set('kalii_session', user);
-    setPage(admin ? 'admin' : 'home');
-  };
+  console.log("Logged in user:", user);
+  console.log("ADMIN_EMAIL:", ADMIN_EMAIL);
+  console.log("ADMIN_PASSWORD:", ADMIN_PASSWORD);
+
+  const admin =
+    user.email === ADMIN_EMAIL &&
+    user.password === ADMIN_PASSWORD;
+
+  console.log("Is Admin?", admin);
+
+  setIsAdmin(admin);
+  setCurrentUser(user);
+  ls.set("kalii_session", user);
+  setPage(admin ? "admin" : "home");
+};
 
   const handleLogout = () => {
     localStorage.removeItem('kalii_session');
@@ -120,10 +149,12 @@ export default function App() {
   const selectedProduct = PRODUCTS.find(p => p.id === selectedProductId) ?? null;
   const cartCount   = cartItems.reduce((s, i) => s + i.quantity, 0);
   const wishlistCount = wishlist.length;
-
+  console.log("Current page:", page);
+  console.log("isAdmin:", isAdmin);
+  
   return (
     <div style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)', minHeight: '100vh' }} className="antialiased">
-
+  
       {/* Admin gets its own full-screen panel with no Navbar */}
       {isAdmin && page === 'admin' ? (
         <AdminPage
